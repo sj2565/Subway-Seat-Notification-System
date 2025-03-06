@@ -69,17 +69,6 @@ aiProcess.stdout.on("data", (data) => {
 	});
 });
 
-process.on("SIGINT", () => {
-    console.log("Ctrl + C 감지됨. C 프로그램 종료중");
-    sensorProcess.kill();  
-    setTimeout(() => process.exit(), 1000); 
-});
-
 sensorProcess.on("close", (code) => {
 	console.log('C 프로그램 종료 (코드: ${code})');
-});
-
-
-sensorProcess.on("exit", (code, signal) => {
-    console.log(`C 프로그램 종료(코드 : ${code}, 시그널 : ${signal})`);
 });
