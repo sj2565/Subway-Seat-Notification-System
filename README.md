@@ -41,3 +41,7 @@ param_grid = {
     "contamination": [0.01, 0.05, 0.1],  # 이상 탐지 비율 튜닝
     "max_samples": [128, 256, 512]  # 샘플 크기 조절
 }
+
+버퍼관련 쓸 것
+stderr, stdout
+fflush
