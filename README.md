@@ -22,3 +22,22 @@
 이상값 (Outlier)	사람이 없는데 온도가 급격히 상승하는 등 비정상적인 데이터	Isolation Forest로 자동 감지
 데이터 스케일링	거리(cm)와 온도(°C)의 단위가 다름	StandardScaler 또는 MinMaxScaler 적용
 💡 전처리를 하면 이상값을 더 정확히 감지할 수 있음! 🚀
+
+
+2. Isolation Forest 외에 다른 모델 추가 (Ensemble Learning)
+💡 왜 필요할까?
+
+Isolation Forest만 사용하면 오탐(False Positive) 발생 가능
+다른 모델과 결합하면 더 정밀한 감지 가능
+📌 One-Class SVM 추가하여 비교 (ai_detector.py 수정)
+✅ Isolation Forest + One-Class SVM 결합하여 더 정밀한 이상 감지
+✅ 오탐(False Positive) 줄이고, 진짜 이상값만 탐지 가능
+
+1. Isolation Forest + LOF 앙상블 적용 (이상 탐지 정확도 향상)
+2. 모델 성능 평가 추가 (AUC-ROC, Precision-Recall)
+3. 하이퍼파라미터 튜닝 작업
+param_grid = {
+    "n_estimators": [100, 200, 300],  # 트리 개수 조절
+    "contamination": [0.01, 0.05, 0.1],  # 이상 탐지 비율 튜닝
+    "max_samples": [128, 256, 512]  # 샘플 크기 조절
+}
