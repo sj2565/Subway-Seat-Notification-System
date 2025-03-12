@@ -1,7 +1,7 @@
 # 지하철 좌석 알림 시스템
 
 ## 1. 프로젝트 소개
-각종 센서(거리, 온도, 압력)를 기반으로 특정 조건을 만족할 시 빈좌석 혹은 좌석 점유인지 웹에서 확인 가능하도록 설계. <br>
+각종 센서(거리, 온도, 압력)를 기반으로 특정 조건을 만족할 시 빈좌석 혹은 좌석 점유인지 웹에서 확인 가능하도록 설계했으며
 빈좌석은 초록색, 좌석 점유는 빨간색으로 직관적이게 표현. <br>
 거리센서와 온도센서는 Raspberry Pi로, 압력센서는 STM32 Cortex-M4시리즈로 동작. <br>
 센서 데이터를 전송 및 전달 받기 위해 GPIO 입출력, UART, SPI 통신 활용. <br>
@@ -26,7 +26,7 @@
 **하드웨어** : Raspberry Pi 4 Model B, STM32F411CEU6 <br>
 
 ## 5. 프로젝트 실행 이미지
-<img width="330" alt="빈좌석" src="https://github.com/user-attachments/assets/2745f2a7-9344-44ce-b4c8-71d6fbafec09" /> <p>빈좌석 이미지 </p>
+<img width="330" alt="빈좌석" src="https://github.com/user-attachments/assets/2745f2a7-9344-44ce-b4c8-71d6fbafec09" /><p>빈좌석 이미지 </p>
 <img width="330" alt="좌석점유" src="https://github.com/user-attachments/assets/796346cc-e048-4780-8966-c9bb245755ea" />
 <img width="330" alt="이상좌석" src="https://github.com/user-attachments/assets/30dfd44f-be11-4f61-9228-3ffd9485f989" /> 
 빈좌석 이미지 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;좌석점유 이미지 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;이상값 좌석 이미지<br><br><br> 
