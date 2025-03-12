@@ -35,6 +35,7 @@
 ## 6. 설치 및 실행
 **C프로그램 컴파일**
 ```bash
+# 라즈베리파이에서 컴파일 진행
 gcc -o SubwaySensor SubwaySensor.c -lwiringPi
 ```
 **Python 라이브러리 설치**
