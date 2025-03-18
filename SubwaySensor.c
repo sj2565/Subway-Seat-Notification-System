@@ -10,12 +10,12 @@
 #include <signal.h>
 
 // GPIO
-#define TRIG 17
-#define ECHO 27
+#define TRIG 17 // 초음파 센서 TRIG핀
+#define ECHO 27 // 초음파 센서 ECHO핀
 #define LED_RED 23
 #define LED_GREEN 24
 #define SPI_CHANNEL 0  // SPI 채널 (CEO 사용)
-#define SPI_SPEED 1000000  // 1MHz 속도
+#define SPI_SPEED 1000000  // 1MHz 속도 (SPI 데이터 전송 속도)
 #define LM35_CHANNEL 0  // MCP3008의 0번 채널 사용
 //#define FILE_PATH "/home/seojoon/nodetest/sensor_data.csv"
 
@@ -27,14 +27,14 @@
 
 int serial_fd; // UART 파일 디스크립터
 
-typedef struct
+typedef struct // 센서 데이터 저장할 구조체
 {
 	float distance;
 	float temperature;
 	float pressure;
 } SensorData;
 
-// GPIO 초기화
+// GPIO 안전하게 리셋하는 함수
 void CleanUp(int signum)
 {
     printf("GPIO 핀번호 리셋 \n");
@@ -49,7 +49,7 @@ void CleanUp(int signum)
     exit(0);
 }
 
-// 핀출력 설정
+// 핀출력(GPIO, SPI) 설정
 void SetUp()
 {
 	if (wiringPiSetupGpio() == -1 || wiringPiSPISetup(SPI_CHANNEL, SPI_SPEED) == -1) {
@@ -64,7 +64,7 @@ void SetUp()
     digitalWrite(TRIG, LOW);
     fprintf(stderr, "초음파 센서 및 온도 센서 준비 완료 \n");
 
-    signal(SIGINT, CleanUp);
+    signal(SIGINT, CleanUp); // Ctrl + C 입력 시 CleanUp 함수 실행
 }
 
 // 거리 센서
@@ -89,11 +89,11 @@ void GetDistance(SensorData* data)
 
 // 온도 센서
 void GetTemperature(SensorData* data){
-	uint8_t buffer[3];
+    uint8_t buffer[3];
     int adc_value;
     float voltage;
 	
-	buffer[0] = 1; // MCP3008 시작 비트
+    buffer[0] = 1; // MCP3008 시작 비트
     buffer[1] = (8 + LM35_CHANNEL) << 4; // 채널 선택
     buffer[2] = 0;
     
@@ -186,8 +186,8 @@ int main()
    
     while (1)
     {
-		struct timeval start_time, end_time;
-		gettimeofday(&start_time, NULL); // 시작 시간 측정
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, NULL); // 시작 시간 측정
 		
         GetDistance(&sensorData);
         GetTemperature(&sensorData);
@@ -197,7 +197,7 @@ int main()
         
         //SaveData(distance, temperature); // 파일 저장 
         
-		// 거리 및 온도 데이터 JSON 형식으로 출력
+	// 거리 및 온도 데이터 JSON 형식으로 출력
         printf("{\"distance\" : %.2f, \"temperature\" : %.1f, \"pressure\": %.2f}\n", sensorData.distance, sensorData.temperature, sensorData.pressure);
         fflush(stdout);     // 버퍼를 즉시 비우면서 출력을 강제로 수행 -> printf문 전부 출력
 
@@ -210,10 +210,10 @@ int main()
                             (end_time.tv_usec - start_time.tv_usec);
         long remaining_time = 5000000 - elapsed_time; // 5초 
         
-        // 남은 시간이 있으면 sleep
+        // 남은 시간이 있으면 대기 (5초가 될때까지)
         if (remaining_time > 0)
         {
-			usleep(remaining_time); // 5초에서 실행 시간을 뺀 만큼 대기
+		usleep(remaining_time); // 5초에서 실행 시간을 뺀 만큼 대기
         }
 	}
     return 0;
