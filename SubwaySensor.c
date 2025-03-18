@@ -23,11 +23,18 @@
 
 #define DISTANCE_THRESHOLD 20.0 // 거리 기준값
 #define TEMPERATURE_THRESHOLD 30.0 // 온도 기준값
-#define PRESSURE_THRESHOLD 100.0  // 압력 기준값
+#define PRESSURE_THRESHOLD 10.0  // 압력 기준값
 
 int serial_fd; // UART 파일 디스크립터
 
-// GPIO Reset
+typedef struct
+{
+	float distance;
+	float temperature;
+	float pressure;
+} SensorData;
+
+// GPIO 초기화
 void CleanUp(int signum)
 {
     printf("GPIO 핀번호 리셋 \n");
@@ -46,7 +53,7 @@ void CleanUp(int signum)
 void SetUp()
 {
 	if (wiringPiSetupGpio() == -1 || wiringPiSPISetup(SPI_CHANNEL, SPI_SPEED) == -1) {
-        fprintf(stderr, "SPI 초기화  or wiringPi 초기화 실패!\n");
+        fprintf(stderr, "SPI 초기화  or GPIO 초기화 실패!\n");
         exit(1);
     }
     pinMode(TRIG, OUTPUT);
@@ -61,11 +68,10 @@ void SetUp()
 }
 
 // 거리 센서
-float GetDistance()
+void GetDistance(SensorData* data)
 {
     struct timeval start, stop;
     long elapsed_time;
-    float distance;
 
     digitalWrite(TRIG, HIGH);
     delayMicroseconds(10);
@@ -78,16 +84,14 @@ float GetDistance()
     gettimeofday(&stop, NULL);
 
     elapsed_time = (stop.tv_sec - start.tv_sec) * 1000000 + (stop.tv_usec - start.tv_usec);
-    distance = (elapsed_time * 0.0343) / 2;
-
-    return distance;
+    data -> distance = (elapsed_time * 0.0343) / 2; // 단위 : cm
 }
 
 // 온도 센서
-float GetTemperature(){
+void GetTemperature(SensorData* data){
 	uint8_t buffer[3];
     int adc_value;
-    float voltage, temperature;
+    float voltage;
 	
 	buffer[0] = 1; // MCP3008 시작 비트
     buffer[1] = (8 + LM35_CHANNEL) << 4; // 채널 선택
@@ -102,9 +106,7 @@ float GetTemperature(){
     voltage = (adc_value * 3.3) / 1023.0;
 
     // 온도 변환 (LM35는 10mV/C)
-    temperature = voltage * 100.0;
-
-    return temperature;
+    data -> temperature = voltage * 100.0;
 }
 
 // 데이터 파일 저장
@@ -131,10 +133,9 @@ void InitUART()
 }
 
 // STM32에서 Pressure값만 추출
-float ReadPressureFromSTM32()
+void ReadPressureFromSTM32(SensorData* data)
 {
     char buffer[64];  // UART 데이터 저장 버퍼
-    float pressure = 0.0;
     int i = 0;
 	
 	serialFlush(serial_fd); // 이전 데이터가 남아있을 수 있으므로 UART 버퍼 비우기
@@ -159,43 +160,48 @@ float ReadPressureFromSTM32()
     // "Pressure: xxx.xx kg" 부분 찾기
     char *pressureStr = strstr(buffer, "Pressure:");
     if (pressureStr) {
-        sscanf(pressureStr, "Pressure: %f", &pressure);
+        sscanf(pressureStr, "Pressure: %f", &data -> pressure);
     }
-    return pressure;  // Pressure 값 반환
 }
 
+// LED 상태 업데이트
+void UpdateLED(SensorData* data)
+{
+	if ((data -> distance < DISTANCE_THRESHOLD || data -> temperature > TEMPERATURE_THRESHOLD) && data -> pressure > PRESSURE_THRESHOLD) {
+		digitalWrite(LED_RED, HIGH);
+		digitalWrite(LED_GREEN, LOW);
+	} else {
+		digitalWrite(LED_RED, LOW);
+		digitalWrite(LED_GREEN, HIGH);
+	}
+}
+
+// 메인 실행 루프
 int main()
 {
     SetUp();
     InitUART();
+    
+    static SensorData sensorData; // 정적 할당
    
     while (1)
     {
 		struct timeval start_time, end_time;
 		gettimeofday(&start_time, NULL); // 시작 시간 측정
 		
-        float distance = GetDistance();
-        float temperature = GetTemperature();
-        float pressure = ReadPressureFromSTM32();
+        GetDistance(&sensorData);
+        GetTemperature(&sensorData);
+        ReadPressureFromSTM32(&sensorData);
         
         //printf("압력 값 수신: %.2f kg\n", pressure);
         
         //SaveData(distance, temperature); // 파일 저장 
         
 		// 거리 및 온도 데이터 JSON 형식으로 출력
-        printf("{\"distance\" : %.2f, \"temperature\" : %.1f, \"pressure\": %.2f}\n", distance, temperature, pressure);
+        printf("{\"distance\" : %.2f, \"temperature\" : %.1f, \"pressure\": %.2f}\n", sensorData.distance, sensorData.temperature, sensorData.pressure);
         fflush(stdout);     // 버퍼를 즉시 비우면서 출력을 강제로 수행 -> printf문 전부 출력
 
-        if ((distance < DISTANCE_THRESHOLD || temperature > TEMPERATURE_THRESHOLD) && pressure > PRESSURE_THRESHOLD)
-        {
-            digitalWrite(LED_RED, HIGH);
-            digitalWrite(LED_GREEN, LOW);
-        }
-        else
-        {
-            digitalWrite(LED_RED, LOW);
-            digitalWrite(LED_GREEN, HIGH);           
-        }
+        UpdateLED(&sensorData); // LED 활성
         
         gettimeofday(&end_time, NULL); // 끝난 시간 측정
         
