@@ -16,14 +16,32 @@
 <img width="850" alt="지하철 회로도" src="https://github.com/user-attachments/assets/6d929607-3185-4ba5-b549-eba194ff2b51">
 
 ## 4. 활용된 기술
-**언어** : C, Python, JavaScript, HTML/CSS <br>
-**라이브러리** : Numpy Pandas, Scipy Scikit-learn <br>
-**IDE** : Visual Studio, Python3 IDLE, STM32cubeIDE <br>
-**프레임워크** : Express <br>
-**서버** : Node.js <br>
-**머신러닝** : Isolation Forest <br>
-**통신** : SPI, UART, WebSocket <br>
-**하드웨어** : Raspberry Pi 4 Model B, STM32F411CEU6 <br>
+
+### 💻 서버 및 백엔드
+- **Node.js** (JavaScript 런타임)
+- **Express.js** (웹 서버 프레임워크)
+- **WebSocket (socket.io)** (실시간 데이터 전송)
+
+### 📡 임베디드 시스템
+- **Raspberry Pi 4 Model B** (센서 데이터 처리 및 SPI통신)
+- **STM32 Black Pill (STM32F411CEU6)** (압력센서 감지 및 UART통신)
+- **C (WiringPi)** (Raspberry Pi에서 센서 제어)
+
+### 🌐 프론트엔드
+- **HTML, CSS, JavaScript** (좌석 상태 그래프 시각화)
+
+### 📡 통신
+- **UART** (STM32 ↔ Raspberry Pi 시리얼 통신)
+- **SPI** (Raspberry Pi 데이터 전송)
+
+### 머신러닝
+- **Python** (모델 설계)
+- **Isolation Forest** (이상값 탐지)
+
+### IDE
+- Visual Studio
+- Python3 IDLE
+- STM32cubeIDE
 
 ## 5. 프로젝트 실행 이미지
 <img width="330" alt="빈좌석" src="https://github.com/user-attachments/assets/2745f2a7-9344-44ce-b4c8-71d6fbafec09" /><p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;빈좌석 이미지</p>
