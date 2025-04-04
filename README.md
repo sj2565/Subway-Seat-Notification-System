@@ -17,22 +17,22 @@
 
 ## 4. 활용된 기술
 
-### 💻 서버 및 백엔드
-- **Node.js** (JavaScript 런타임)
-- **Express.js** (웹 서버 프레임워크)
-- **WebSocket (socket.io)** (실시간 데이터 전송)
-
 ### ⚙ 임베디드 시스템
 - **Raspberry Pi 4 Model B** (센서 데이터 처리 및 SPI통신)
 - **STM32 Black Pill (STM32F411CEU6)** (압력센서 감지 및 UART통신)
 - **C (WiringPi)** (Raspberry Pi에서 센서 제어)
 
-### 🌐 프론트엔드
-- **HTML, CSS, JavaScript** (좌석 상태 그래프 시각화)
-
 ### 📡 통신
 - **UART** (STM32 ↔ Raspberry Pi 시리얼 통신)
 - **SPI** (Raspberry Pi 데이터 전송)
+
+### 💻 서버 및 백엔드
+- **Node.js** (JavaScript 런타임)
+- **Express.js** (웹 서버 프레임워크)
+- **WebSocket (socket.io)** (실시간 데이터 전송)
+
+### 🌐 프론트엔드
+- **HTML, CSS, JavaScript** (좌석 상태 그래프 시각화)
 
 ### 👩‍💻 머신러닝
 - **Python** (모델 설계)
