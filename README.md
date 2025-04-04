@@ -26,13 +26,13 @@
 - **UART** (STM32 ↔ Raspberry Pi 시리얼 통신)
 - **SPI** (Raspberry Pi 데이터 전송)
 
+### 🌐 프론트엔드
+- **HTML, CSS, JavaScript** (좌석 상태 그래프 시각화)
+
 ### 💻 서버 및 백엔드
 - **Node.js** (JavaScript 런타임)
 - **Express.js** (웹 서버 프레임워크)
 - **WebSocket (socket.io)** (실시간 데이터 전송)
-
-### 🌐 프론트엔드
-- **HTML, CSS, JavaScript** (좌석 상태 그래프 시각화)
 
 ### 👩‍💻 머신러닝
 - **Python** (모델 설계)
